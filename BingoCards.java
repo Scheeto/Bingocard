@@ -1,33 +1,45 @@
-// Reading File using Java Program
-
-// Import the File class
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner; 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class BingoCards
-{
-    public static void main(String[] args)
-    {
-        // Reading File also
-        // Handling Exception
+public class BingoCards {
+    private List<String> cardsData;
+    private String filePath;
+
+    public BingoCards(String filePath) {
+        this.filePath = filePath;
+        this.cardsData = new ArrayList<>();
+    }
+
+    public void readCardsFromFile() {
         try {
-            File Obj = new File("Cards.txt");
-            Scanner Reader = new Scanner(Obj);
-          
-            // Traversing File Data
-              while (Reader.hasNextLine()) {
-                String data = Reader.nextLine();
-                System.out.println(data);
+            File file = new File(filePath);
+            Scanner reader = new Scanner(file);
+
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                cardsData.add(data);
             }
-          
-            Reader.close();
-        }
-        
-        // Exception Cases
-        catch (FileNotFoundException e) {
+
+            reader.close();
+            System.out.println("Cards data read successfully.");
+        } catch (FileNotFoundException e) {
             System.out.println("An error has occurred.");
             e.printStackTrace();
         }
+    }
+
+    public void printCardsData() {
+        for (String data : cardsData) {
+            System.out.println(data);
+        }
+    }
+
+    public static void main(String[] args) {
+        BingoCards bingoCards = new BingoCards("Cards.txt");
+        bingoCards.readCardsFromFile();
+        bingoCards.printCardsData();
     }
 }
