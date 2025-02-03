@@ -5,14 +5,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner; 
 
-public class ReadFile 
+public class BingoCards
 {
     public static void main(String[] args)
     {
         // Reading File also
         // Handling Exception
         try {
-            File Obj = new File("myfile.txt");
+            File Obj = new File("Cards.txt");
             Scanner Reader = new Scanner(Obj);
           
             // Traversing File Data
