@@ -4,23 +4,51 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class BingoCards {
-    private List<String> cardsData;
-    private String filePath;
-
-    public BingoCards(String filePath) {
-        this.filePath = filePath;
-        this.cardsData = new ArrayList<>();
+class BingoCard {
+    List<String> cardData;
+    
+        public BingoCard() {
+            this.cardData = new ArrayList<>();
+        }
+    
+        public void addLine(String line) {
+            cardData.add(line);
+        }
+    
+        public void printCardData() {
+            for (String line : cardData) {
+                System.out.println(line);
+            }
+        }
     }
-
-    public void readCardsFromFile() {
-        try {
-            File file = new File(filePath);
-            Scanner reader = new Scanner(file);
-
-            while (reader.hasNextLine()) {
-                String data = reader.nextLine();
-                cardsData.add(data);
+    
+    public class BingoCards {
+        private List<BingoCard> cards;
+        private String filePath;
+    
+        public BingoCards(String filePath) {
+            this.filePath = filePath;
+            this.cards = new ArrayList<>();
+        }
+    
+        public void readCardsFromFile() {
+            try {
+                File file = new File(filePath);
+                Scanner reader = new Scanner(file);
+                BingoCard currentCard = new BingoCard();
+    
+                while (reader.hasNextLine()) {
+                    String data = reader.nextLine();
+                    if (data.isEmpty()) {
+                        cards.add(currentCard);
+                        currentCard = new BingoCard();
+                    } else {
+                        currentCard.addLine(data);
+                    }
+                }
+                // Add the last card if file does not end with an empty line
+                if (!currentCard.cardData.isEmpty()) {
+                cards.add(currentCard);
             }
 
             reader.close();
@@ -32,8 +60,9 @@ public class BingoCards {
     }
 
     public void printCardsData() {
-        for (String data : cardsData) {
-            System.out.println(data);
+        for (BingoCard card : cards) {
+            card.printCardData();
+            System.out.println("----");
         }
     }
 
