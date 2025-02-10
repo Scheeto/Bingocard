@@ -6,48 +6,53 @@ import java.util.Scanner;
 
 class BingoCard {
     List<String> cardData;
-    
-        public BingoCard() {
-            this.cardData = new ArrayList<>();
+    private static final String[] COLUMN_LABELS = {"B", "I", "N", "G", "O"};
+
+    public BingoCard() {
+        this.cardData = new ArrayList<>();
+    }
+
+    public void addLine(String line) {
+        // Convert letters to their index values
+        for (int i = 0; i < COLUMN_LABELS.length; i++) {
+            line = line.replace(COLUMN_LABELS[i], String.valueOf(i));
         }
-    
-        public void addLine(String line) {
-            cardData.add(line);
-        }
-    
-        public void printCardData() {
-            for (String line : cardData) {
-                System.out.println(line);
-            }
+        cardData.add(line);
+    }
+
+    public void printCardData() {
+        for (String line : cardData) {
+            System.out.println(line);
         }
     }
-    
-    public class BingoCards {
-        private List<BingoCard> cards;
-        private String filePath;
-    
-        public BingoCards(String filePath) {
-            this.filePath = filePath;
-            this.cards = new ArrayList<>();
-        }
-    
-        public void readCardsFromFile() {
-            try {
-                File file = new File(filePath);
-                Scanner reader = new Scanner(file);
-                BingoCard currentCard = new BingoCard();
-    
-                while (reader.hasNextLine()) {
-                    String data = reader.nextLine();
-                    if (data.isEmpty()) {
-                        cards.add(currentCard);
-                        currentCard = new BingoCard();
-                    } else {
-                        currentCard.addLine(data);
-                    }
+}
+
+public class BingoCards {
+    private List<BingoCard> cards;
+    private String filePath;
+
+    public BingoCards(String filePath) {
+        this.filePath = filePath;
+        this.cards = new ArrayList<>();
+    }
+
+    public void readCardsFromFile() {
+        try {
+            File file = new File(filePath);
+            Scanner reader = new Scanner(file);
+            BingoCard currentCard = new BingoCard();
+
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                if (data.isEmpty()) {
+                    cards.add(currentCard);
+                    currentCard = new BingoCard();
+                } else {
+                    currentCard.addLine(data);
                 }
-                // Add the last card if file does not end with an empty line
-                if (!currentCard.cardData.isEmpty()) {
+            }
+            // Add the last card if file does not end with an empty line
+            if (!currentCard.cardData.isEmpty()) {
                 cards.add(currentCard);
             }
 
