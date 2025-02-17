@@ -12,22 +12,27 @@ class BingoCard {
     }
 
     public void addLine(String line) {
-        // Split the line into individual numbers using commas
         String[] lineArray = line.split(",");
         cardData.add(lineArray);
     }
 
     public String getValueAt(int rowIndex, int columnIndex) {
         if (rowIndex >= 0 && rowIndex < cardData.size() && columnIndex >= 0 && columnIndex < cardData.get(rowIndex).length) {
-            return cardData.get(rowIndex)[columnIndex].trim(); // Trim to remove extra spaces
+            return cardData.get(rowIndex)[columnIndex].trim();
         }
         return null;
+    }
+
+    public void setValueAt(int rowIndex, int columnIndex, String value) {
+        if (rowIndex >= 0 && rowIndex < cardData.size() && columnIndex >= 0 && columnIndex < cardData.get(rowIndex).length) {
+            cardData.get(rowIndex)[columnIndex] = value;
+        }
     }
 
     public void printCardData() {
         for (String[] line : cardData) {
             for (String element : line) {
-                System.out.print(element + " ");
+                System.out.print("[" + element.trim() + "] ");
             }
             System.out.println();
         }
@@ -52,17 +57,14 @@ public class BingoCards {
             while (reader.hasNextLine()) {
                 String data = reader.nextLine().trim();
                 if (data.startsWith("Card")) {
-                    // Start a new card
                     if (currentCard != null) {
                         cards.add(currentCard);
                     }
                     currentCard = new BingoCard();
                 } else if (!data.isEmpty() && currentCard != null) {
-                    // Add the line to the current card
                     currentCard.addLine(data);
                 }
             }
-            // Add the last card if file does not end with an empty line
             if (currentCard != null && !currentCard.cardData.isEmpty()) {
                 cards.add(currentCard);
             }
@@ -70,7 +72,7 @@ public class BingoCards {
             reader.close();
             System.out.println("Cards data read successfully.");
         } catch (FileNotFoundException e) {
-            System.out.println("An error has occurred.");
+            System.err.println("File not found: " + filePath);
             e.printStackTrace();
         }
     }
@@ -80,10 +82,7 @@ public class BingoCards {
             return false;
         }
 
-        // Extract the column label (e.g., 'B' from 'B3')
         char columnLabel = input.charAt(0);
-
-        // Map the column label to a column index
         int columnIndex;
         switch (columnLabel) {
             case 'B': columnIndex = 0; break;
@@ -91,26 +90,27 @@ public class BingoCards {
             case 'N': columnIndex = 2; break;
             case 'G': columnIndex = 3; break;
             case 'O': columnIndex = 4; break;
-            default: return false; // Invalid column label
+            default: return false;
         }
 
-        // Extract the row number (e.g., '3' from 'B3') and convert to zero-based index
         int rowIndex;
         try {
-            rowIndex = Integer.parseInt(input.substring(1)) - 1; // Convert to zero-based index
+            rowIndex = Integer.parseInt(input.substring(1)) - 1;
         } catch (NumberFormatException e) {
-            return false; // Invalid row number
-        }
-
-        // Check if the row and column indices are valid
-        if (rowIndex < 0 || rowIndex >= 5) { // Assuming 5 rows in a bingo card
+            System.err.println("Invalid row number: " + input.substring(1));
             return false;
         }
 
-        // Iterate through all cards and check the specified row and column for the value
+        if (rowIndex < 0 || rowIndex >= 5) {
+            System.err.println("Row index out of range: " + rowIndex);
+            return false;
+        }
+
         for (BingoCard card : cards) {
             String cardValue = card.getValueAt(rowIndex, columnIndex);
+            System.out.println("Checking card value: " + cardValue + " against input: " + input.substring(1));
             if (cardValue != null && cardValue.equals(input.substring(1))) {
+                card.setValueAt(rowIndex, columnIndex, "null");
                 return true;
             }
         }
@@ -141,7 +141,7 @@ public class BingoCards {
 
             boolean found = bingoCards.searchValueInColumn(input);
             if (found) {
-                System.out.println(input + " was found!");
+                System.out.println(input + " was found and replaced with 'null'!");
             } else {
                 System.out.println(input + " was not found.");
             }
