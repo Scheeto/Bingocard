@@ -6,17 +6,12 @@ import java.util.Scanner;
 
 class BingoCard {
     List<String> cardData;
-    private static final String[] COLUMN_LABELS = {"B", "I", "N", "G", "O"};
 
     public BingoCard() {
         this.cardData = new ArrayList<>();
     }
 
     public void addLine(String line) {
-        // Convert letters to their index values
-        for (int i = 0; i < COLUMN_LABELS.length; i++) {
-            line = line.replace(COLUMN_LABELS[i], String.valueOf(i));
-        }
         cardData.add(line);
     }
 
