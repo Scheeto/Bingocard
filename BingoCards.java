@@ -5,19 +5,23 @@ import java.util.List;
 import java.util.Scanner;
 
 class BingoCard {
-    List<String> cardData;
+    List<String[]> cardData;
 
     public BingoCard() {
         this.cardData = new ArrayList<>();
     }
 
     public void addLine(String line) {
-        cardData.add(line);
+        String[] lineArray = line.split(" ");
+        cardData.add(lineArray);
     }
 
     public void printCardData() {
-        for (String line : cardData) {
-            System.out.println(line);
+        for (String[] line : cardData) {
+            for (String element : line) {
+                System.out.print(element + " ");
+            }
+            System.out.println();
         }
     }
 }
