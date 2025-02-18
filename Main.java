@@ -67,7 +67,16 @@ class BingoCard {
         return false;
     }
 
-    public boolean hasNumber(int number) {
+    public boolean hasNumber(int number, int col) {
+        for (int i = 0; i < 5; i++) {
+            if (card[i][col].equals(String.valueOf(number))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasNumber(int number) { // Overload the hasNumber function to avoid modifying the older parts of the code
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (card[i][j].equals(String.valueOf(number))) {
@@ -193,8 +202,37 @@ class BingoGame {
             }
 
             int calledNum;
+            int col = -1; // Initialize to an invalid column index
             try {
-                calledNum = Integer.parseInt(input);
+                if (input.length() > 1) { // Check if input has letter and number
+                    char letter = input.toUpperCase().charAt(0);
+                    calledNum = Integer.parseInt(input.substring(1));
+                    // Translate the letter to a column index.
+                    switch (letter) {
+                        case 'B':
+                            col = 0;
+                            break;
+                        case 'I':
+                            col = 1;
+                            break;
+                        case 'N':
+                            col = 2;
+                            break;
+                        case 'G':
+                            col = 3;
+                            break;
+                        case 'O':
+                            col = 4;
+                            break;
+                        default:
+                            System.out.println("Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
+                            continue; // Go to the next iteration of the loop
+                    }
+
+                } else {
+                    System.out.println("Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
+                    continue;
+                }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
                 continue;
@@ -206,12 +244,10 @@ class BingoGame {
             }
 
 
-            if (card.hasNumber(calledNum)) {
+            if (col != -1 && card.hasNumber(calledNum, col)) { // Use the column to mark the correct one
                 for (int row = 0; row < 5; row++) {
-                    for (int col = 0; col < 5; col++) {
-                        if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
-                            card.markCell(row, col);
-                        }
+                    if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
+                        card.markCell(row, col);
                     }
                 }
                 card.displayInUserFriendlyFormat();
@@ -249,20 +285,16 @@ class BingoGame {
         String calledNumber;
 
         while (fileScanner.hasNextLine()) {
+            // Removed the first number to avoid the errors.
             if (counter == 1) {
-                System.out.println("First number will be B1");
-                calledNumber = "B1";
+                calledNumber = "B1"; // This will call B1 first
             } else if (counter == 5) {
-                System.out.println("Fifth number will be I5");
                 calledNumber = "I5";
             } else if (counter == 10) {
-                System.out.println("Tenth number will be N0");
                 calledNumber = "N0";
             } else if (counter == 15) {
-                System.out.println("Fifteenth number will be G5");
                 calledNumber = "G5";
             } else if (counter == 20) {
-                System.out.println("Twentieth number will be O0");
                 calledNumber = "O0";
             } else {
                 // Read the called number from the file (if it has a next line)
@@ -274,7 +306,14 @@ class BingoGame {
                 if (nextLine.contains("Card")) {
                     continue; // Skip card id and read numbers from the input file
                 }
-                calledNumber = "B" + nextLine;
+                // Fix: Handle comma separated numbers
+                String[] numberStrings = nextLine.split(",");
+                if (numberStrings.length > 0) {
+                    calledNumber = "B" + numberStrings[0].trim();
+                } else {
+                    System.out.println("Skipping empty line or invalid format.");
+                    continue;
+                }
                 counter++;
             }
 
@@ -293,13 +332,30 @@ class BingoGame {
             List<BingoCard> cardsToRemove = new ArrayList<>();
 
             for (BingoCard card : cards) {
-                if (card.hasNumber(calledNum)) {
+                int col = -1;
+                switch (calledNumber.charAt(0)) { // Use the first character to translate the letter
+                    case 'B':
+                        col = 0;
+                        break;
+                    case 'I':
+                        col = 1;
+                        break;
+                    case 'N':
+                        col = 2;
+                        break;
+                    case 'G':
+                        col = 3;
+                        break;
+                    case 'O':
+                        col = 4;
+                        break;
+                }
+
+                if (col != -1 && card.hasNumber(calledNum, col)) { // Use the column to check the cards
                     // Mark the card based on the called number
                     for (int row = 0; row < 5; row++) {
-                        for (int col = 0; col < 5; col++) {
-                            if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
-                                card.markCell(row, col);
-                            }
+                        if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
+                            card.markCell(row, col);
                         }
                     }
                     card.displayInUserFriendlyFormat();
