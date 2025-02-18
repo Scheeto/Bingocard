@@ -95,9 +95,9 @@ class BingoCard {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (marked[i][j]) {
-                    System.out.print("XX " + (j + 1) + "\t");
+                    System.out.print("XX\t");
                 } else {
-                    System.out.print(card[i][j] + " " + (j + 1) + "\t");
+                    System.out.print(card[i][j] + "\t");
                 }
             }
             System.out.println();
