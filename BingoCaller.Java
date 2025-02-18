@@ -22,8 +22,4 @@ public class BingoCaller {
         calledNumbers.add(call);
         return call;
     }
-
-    public void reset() {
-        calledNumbers.clear();
-    }
 }
