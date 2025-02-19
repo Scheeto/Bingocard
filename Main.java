@@ -265,7 +265,7 @@ class BingoGame {
                         return;
                     }
                 }
-                calledNumbers.add("B" + calledNum);
+                calledNumbers.add(input.toUpperCase()); // Use the letter + number
             } else {
                 System.out.println("Number not found on this card.");
                 card.displayInUserFriendlyFormat();
@@ -281,101 +281,83 @@ class BingoGame {
             System.err.println("Could not find the file");
             return;
         }
-        int counter = 1;
-        String calledNumber;
+        // No hardcoded B1, I5, etc.  We now read from the file directly.
 
+        List<String> allCardData = new ArrayList<>();
         while (fileScanner.hasNextLine()) {
-            // Removed the first number to avoid the errors.
-            if (counter == 1) {
-                calledNumber = "B1"; // This will call B1 first
-            } else if (counter == 5) {
-                calledNumber = "I5";
-            } else if (counter == 10) {
-                calledNumber = "N0";
-            } else if (counter == 15) {
-                calledNumber = "G5";
-            } else if (counter == 20) {
-                calledNumber = "O0";
-            } else {
-                // Read the called number from the file (if it has a next line)
-                if (!fileScanner.hasNextLine()) {
-                    System.out.println("End of file.  No more numbers to call.");
-                    break; // Exit if no more numbers to call
-                }
-                String nextLine = fileScanner.nextLine();
-                if (nextLine.contains("Card")) {
-                    continue; // Skip card id and read numbers from the input file
-                }
-                // Fix: Handle comma separated numbers
-                String[] numberStrings = nextLine.split(",");
-                if (numberStrings.length > 0) {
-                    calledNumber = "B" + numberStrings[0].trim();
-                } else {
-                    System.out.println("Skipping empty line or invalid format.");
-                    continue;
-                }
-                counter++;
-            }
-
-            // Extract the number from the called number (e.g., "B12" -> 12)
-            int calledNum;
-            try {
-                calledNum = Integer.parseInt(calledNumber.substring(1));
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid number format in called number: " + calledNumber);
-                continue; // Skip this number and go to the next
-            }
-
-            calledNumbers.add(calledNumber);
-            System.out.println("Called Number: " + calledNumber);
-
-            List<BingoCard> cardsToRemove = new ArrayList<>();
-
-            for (BingoCard card : cards) {
-                int col = -1;
-                switch (calledNumber.charAt(0)) { // Use the first character to translate the letter
-                    case 'B':
-                        col = 0;
-                        break;
-                    case 'I':
-                        col = 1;
-                        break;
-                    case 'N':
-                        col = 2;
-                        break;
-                    case 'G':
-                        col = 3;
-                        break;
-                    case 'O':
-                        col = 4;
-                        break;
-                }
-
-                if (col != -1 && card.hasNumber(calledNum, col)) { // Use the column to check the cards
-                    // Mark the card based on the called number
-                    for (int row = 0; row < 5; row++) {
-                        if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
-                            card.markCell(row, col);
-                        }
-                    }
-                    card.displayInUserFriendlyFormat();
-                    if (card.checkBingo()) {
-                        System.out.println("Bingo! Card " + card.getId() + " wins!");
-                        cardsToRemove.add(card);
-                    }
-                }
-            }
-            cards.removeAll(cardsToRemove);
-            if (cards.isEmpty()) {
-                System.out.println("No cards left. Game over.");
-                break; // Exit the game
-            }
-
-            counter++; // increment counter
-        } // end while
-        if (fileScanner != null) {
-            fileScanner.close(); // close the file scanner.
+            allCardData.add(fileScanner.nextLine());
         }
+        fileScanner.close();
+
+
+        // Determine all possible numbers to be called.
+        Set<Integer> allPossibleNumbers = new HashSet<>();
+        for (int i = 1; i <= 75; i++) {
+            allPossibleNumbers.add(i);
+        }
+        List<Integer> numbersToCall = new ArrayList<>(allPossibleNumbers); // Convert to list for shuffling
+        Collections.shuffle(numbersToCall); // Shuffle to randomize the numbers
+
+
+        // Process each card
+        for (BingoCard card : cards) {
+            boolean cardWon = false;
+            card.displayInUserFriendlyFormat();
+
+            for (int numberIndex = 0; numberIndex < numbersToCall.size(); numberIndex++) {
+                int calledNum = numbersToCall.get(numberIndex);
+                char letter = ' ';
+                int col = -1;
+
+                // Determine the letter based on the number
+                if (calledNum >= 1 && calledNum <= 15) {
+                    letter = 'B';
+                    col = 0;
+                } else if (calledNum >= 16 && calledNum <= 30) {
+                    letter = 'I';
+                    col = 1;
+                } else if (calledNum >= 31 && calledNum <= 45) {
+                    letter = 'N';
+                    col = 2;
+                } else if (calledNum >= 46 && calledNum <= 60) {
+                    letter = 'G';
+                    col = 3;
+                } else if (calledNum >= 61 && calledNum <= 75) {
+                    letter = 'O';
+                    col = 4;
+                }
+                String calledNumber = letter + String.valueOf(calledNum); // Build called number string
+
+                if (!calledNumbers.contains(calledNumber)) {
+                    calledNumbers.add(calledNumber);
+                    System.out.println("Called Number: " + calledNumber);
+
+                    if (col != -1 && card.hasNumber(calledNum, col)) {
+                        for (int row = 0; row < 5; row++) {
+                            if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
+                                card.markCell(row, col);
+                            }
+                        }
+                        card.displayInUserFriendlyFormat();
+
+                        if (card.checkBingo()) {
+                            System.out.println("Bingo! Card " + card.getId() + " wins!");
+                            cardWon = true;
+                            break; // Card wins, go to next card
+                        }
+                    } else {
+                        // Number not on the card. Continue to the next call.
+                    }
+                } else {
+                    System.out.println("Number " + calledNumber + " already called. Skipping.");
+                }
+            }
+
+            if (!cardWon) {
+                System.out.println("Card " + card.getId() + " did not achieve Bingo.");
+            }
+        }
+        System.out.println("Random game over.");
     }
 }
 
@@ -426,14 +408,20 @@ public class Main {
         if (isManualMode) {
             selectedCards = cards; // All cards for manual mode
         } else {
-            System.out.print("Enter the number of cards to play (1-9): ");
-            int numCards = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            System.out.print("Enter the number of cards to play (1-" + cards.size() + "): ");
+            int numCards = 0;
+            try {
+                numCards = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Using all cards.");
+                numCards = cards.size();
+            }
 
             if (numCards < 1 || numCards > cards.size()) {
-                System.out.println("Invalid number of cards.  Max " + cards.size());
-                return;
+                System.out.println("Invalid number of cards.  Max " + cards.size() + ". Using all cards.");
+                numCards = cards.size();
             }
+
             selectedCards = new ArrayList<>(cards.subList(0, numCards));
         }
 
