@@ -81,8 +81,7 @@ class BingoCard {
         return false;
     }
 
-    public boolean hasNumber(int number) { // Overload the hasNumber function to avoid modifying the older parts of the
-                                           // code
+    public boolean hasNumber(int number) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (card[i][j].equals(String.valueOf(number))) {
@@ -149,7 +148,7 @@ class BingoGame {
                 return;
             }
             playCardManually(currentCard);
-            if (!cards.contains(currentCard)) { // If the card was removed, go to the next card.
+            if (!cards.contains(currentCard)) {
                 continue;
             }
             String continueChoice;
@@ -180,14 +179,14 @@ class BingoGame {
             try {
                 cardChoice = Integer.parseInt(scanner.nextLine());
                 if (cardChoice == 0) {
-                    return null; // Exit
+                    return null;
                 }
                 if (cardChoice < 1 || cardChoice > cards.size()) {
                     System.out.println("Invalid card number. Please try again.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
-                cardChoice = -1; // Ensure cardChoice is invalid
+                cardChoice = -1;
             }
         } while (cardChoice < 1 || cardChoice > cards.size());
 
@@ -207,44 +206,30 @@ class BingoGame {
             }
 
             int calledNum;
-            int col = -1; // Initialize to an invalid column index
+            int col = -1;
             try {
-                if (input.length() > 1) { // Check if input has letter and number
+                if (input.length() > 1) {
                     char letter = input.toUpperCase().charAt(0);
                     calledNum = Integer.parseInt(input.substring(1));
-                    // Translate the letter to a column index.
                     switch (letter) {
-                        case 'B':
-                            col = 0;
-                            break;
-                        case 'I':
-                            col = 1;
-                            break;
-                        case 'N':
-                            col = 2;
-                            break;
-                        case 'G':
-                            col = 3;
-                            break;
-                        case 'O':
-                            col = 4;
-                            break;
+                        case 'B': col = 0; break;
+                        case 'I': col = 1; break;
+                        case 'N': col = 2; break;
+                        case 'G': col = 3; break;
+                        case 'O': col = 4; break;
                         default:
-                            System.out.println(
-                                    "Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
-                            continue; // Go to the next iteration of the loop
+                            System.out.println("Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
+                            continue;
                     }
-
                 } else {
-                    System.out.println(
-                            "Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
+                    System.out.println("Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
                     continue;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
                 continue;
             }
-            // Check if the number has been called
+            
             if (calledNumbers.contains("B" + calledNum) || calledNumbers.contains("I" + calledNum)
                     || calledNumbers.contains("N" + calledNum) || calledNumbers.contains("G" + calledNum)
                     || calledNumbers.contains("O" + calledNum)) {
@@ -252,7 +237,7 @@ class BingoGame {
                 continue;
             }
 
-            if (col != -1 && card.hasNumber(calledNum, col)) { // Use the column to mark the correct one
+            if (col != -1 && card.hasNumber(calledNum, col)) {
                 for (int row = 0; row < 5; row++) {
                     if (card.getCard()[row][col].equals(String.valueOf(calledNum))) {
                         card.markCell(row, col);
@@ -273,7 +258,7 @@ class BingoGame {
                         return;
                     }
                 }
-                calledNumbers.add(input.toUpperCase()); // Use the letter + number
+                calledNumbers.add(input.toUpperCase());
             } else {
                 System.out.println("Number not found on this card.");
                 card.displayInUserFriendlyFormat();
@@ -289,23 +274,20 @@ class BingoGame {
             System.err.println("Could not find the file");
             return;
         }
-        // No hardcoded B1, I5, etc. We now read from the file directly.
-
+        
         List<String> allCardData = new ArrayList<>();
         while (fileScanner.hasNextLine()) {
             allCardData.add(fileScanner.nextLine());
         }
         fileScanner.close();
 
-        // Determine all possible numbers to be called.
         Set<Integer> allPossibleNumbers = new HashSet<>();
         for (int i = 1; i <= 75; i++) {
             allPossibleNumbers.add(i);
         }
-        List<Integer> numbersToCall = new ArrayList<>(allPossibleNumbers); // Convert to list for shuffling
-        Collections.shuffle(numbersToCall); // Shuffle to randomize the numbers
+        List<Integer> numbersToCall = new ArrayList<>(allPossibleNumbers);
+        Collections.shuffle(numbersToCall);
 
-        // Process each card
         for (BingoCard card : cards) {
             boolean cardWon = false;
             card.displayInUserFriendlyFormat();
@@ -315,24 +297,18 @@ class BingoGame {
                 char letter = ' ';
                 int col = -1;
 
-                // Determine the letter based on the number
                 if (calledNum >= 1 && calledNum <= 15) {
-                    letter = 'B';
-                    col = 0;
+                    letter = 'B'; col = 0;
                 } else if (calledNum >= 16 && calledNum <= 30) {
-                    letter = 'I';
-                    col = 1;
+                    letter = 'I'; col = 1;
                 } else if (calledNum >= 31 && calledNum <= 45) {
-                    letter = 'N';
-                    col = 2;
+                    letter = 'N'; col = 2;
                 } else if (calledNum >= 46 && calledNum <= 60) {
-                    letter = 'G';
-                    col = 3;
+                    letter = 'G'; col = 3;
                 } else if (calledNum >= 61 && calledNum <= 75) {
-                    letter = 'O';
-                    col = 4;
+                    letter = 'O'; col = 4;
                 }
-                String calledNumber = letter + String.valueOf(calledNum); // Build called number string
+                String calledNumber = letter + String.valueOf(calledNum);
 
                 if (!calledNumbers.contains(calledNumber)) {
                     calledNumbers.add(calledNumber);
@@ -349,10 +325,8 @@ class BingoGame {
                         if (card.checkBingo()) {
                             System.out.println("Bingo! Card " + card.getId() + " wins!");
                             cardWon = true;
-                            break; // Card wins, go to next card
+                            break;
                         }
-                    } else {
-                        // Number not on the card. Continue to the next call.
                     }
                 } else {
                     System.out.println("Number " + calledNumber + " already called. Skipping.");
@@ -372,7 +346,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         List<BingoCard> cards = new ArrayList<>();
 
-        // Read cards from input file and print the contents
         try {
             File file = new File("Cards.txt");
             Scanner fileScanner = new Scanner(file);
@@ -382,19 +355,15 @@ public class Main {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 if (line.contains("Card")) {
-                    // New card found
                     if (currentCardId != null) {
-                        // Process the previous card
                         cards.add(createBingoCard(currentCardId, cardDataLines));
                         cardDataLines.clear();
                     }
                     currentCardId = line;
                 } else if (line.trim().length() > 0) {
-                    // Collect the lines of card data
                     cardDataLines.add(line);
                 }
             }
-            // Process the last card (if any)
             if (currentCardId != null) {
                 cards.add(createBingoCard(currentCardId, cardDataLines));
             }
@@ -412,7 +381,7 @@ public class Main {
 
         List<BingoCard> selectedCards;
         if (isManualMode) {
-            selectedCards = cards; // All cards for manual mode
+            selectedCards = cards;
         } else {
             System.out.print("Enter the number of cards to play (1-" + cards.size() + "): ");
             int numCards = 0;
@@ -424,7 +393,7 @@ public class Main {
             }
 
             if (numCards < 1 || numCards > cards.size()) {
-                System.out.println("Invalid number of cards.  Max " + cards.size() + ". Using all cards.");
+                System.out.println("Invalid number of cards. Max " + cards.size() + ". Using all cards.");
                 numCards = cards.size();
             }
 
@@ -446,7 +415,7 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             String[] rowData = cardDataLines.get(i).split(",");
             for (int j = 0; j < 5; j++) {
-                cardData[i][j] = rowData[j].trim(); // Remove any extra spaces.
+                cardData[i][j] = rowData[j].trim();
             }
         }
         return cardData;

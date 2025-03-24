@@ -1,5 +1,4 @@
 abstract class Pattern {
-    // Abstract method that checks if the pattern is matched on the given BingoCard
     abstract boolean matches(BingoCard card);
 }
 
@@ -69,6 +68,7 @@ class DiagonalPattern extends Pattern {
         return mainDiagonal || antiDiagonal;
     }
 }
+
 class CustomPattern extends Pattern {
     private int[][] coordinates;
     
