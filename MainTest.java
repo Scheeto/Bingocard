@@ -65,4 +65,12 @@ public class MainTest {
         assertTrue(colPattern.matches(card));
     }
 
+    @Test
+    void testP6_FourthColumnFullyMarked() {
+        for (int i = 0; i < 5; i++) {
+            card.markCell(i, 3);
+        }
+        Pattern colPattern = new ColumnPattern();
+        assertTrue(colPattern.matches(card));
+    }
 }
