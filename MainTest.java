@@ -126,4 +126,24 @@ public class MainTest {
         Pattern diagPattern = new DiagonalPattern();
         assertFalse(diagPattern.matches(card));
     }
+    @Test
+    void testP13_TPatternFullyMarked() {
+        int[][] tCoords = {{0,0},{0,1},{0,2},{0,3},{0,4},{1,2},{2,2},{3,2},{4,2}};
+        Pattern tPattern = new CustomPattern(tCoords);
+        for (int[] coord : tCoords) {
+            card.markCell(coord[0], coord[1]);
+        }
+        assertTrue(tPattern.matches(card));
+    }
+    @Test
+    void testP14_TPatternEntireCardMarked() {
+        int[][] tCoords = {{0,0},{0,1},{0,2},{0,3},{0,4},{1,2},{2,2},{3,2},{4,2}};
+        Pattern tPattern = new CustomPattern(tCoords);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                card.markCell(i, j);
+            }
+        }
+        assertTrue(tPattern.matches(card));
+    }
 }
