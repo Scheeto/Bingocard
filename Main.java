@@ -6,11 +6,16 @@ class BingoCard {
     private String id;
     private String[][] card;
     private boolean[][] marked;
+    private List<Pattern> patterns;
 
     public BingoCard(String id, String[][] card) {
         this.id = id;
         this.card = card;
         this.marked = new boolean[5][5];
+        this.patterns = new ArrayList<>();
+        patterns.add(new RowPattern());
+        patterns.add(new ColumnPattern());
+        patterns.add(new DiagonalPattern());
     }
 
     public String getId() {
@@ -76,7 +81,8 @@ class BingoCard {
         return false;
     }
 
-    public boolean hasNumber(int number) { // Overload the hasNumber function to avoid modifying the older parts of the code
+    public boolean hasNumber(int number) { // Overload the hasNumber function to avoid modifying the older parts of the
+                                           // code
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (card[i][j].equals(String.valueOf(number))) {
@@ -188,7 +194,6 @@ class BingoGame {
         return cards.get(cardChoice - 1);
     }
 
-
     private void playCardManually(BingoCard card) {
         boolean bingoAchieved = false;
         while (!bingoAchieved) {
@@ -225,12 +230,14 @@ class BingoGame {
                             col = 4;
                             break;
                         default:
-                            System.out.println("Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
+                            System.out.println(
+                                    "Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
                             continue; // Go to the next iteration of the loop
                     }
 
                 } else {
-                    System.out.println("Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
+                    System.out.println(
+                            "Invalid input format. Please enter a letter (B, I, N, G, O) followed by a number");
                     continue;
                 }
             } catch (NumberFormatException e) {
@@ -238,11 +245,12 @@ class BingoGame {
                 continue;
             }
             // Check if the number has been called
-            if (calledNumbers.contains("B" + calledNum) || calledNumbers.contains("I" + calledNum) || calledNumbers.contains("N" + calledNum) || calledNumbers.contains("G" + calledNum) || calledNumbers.contains("O" + calledNum)) {
+            if (calledNumbers.contains("B" + calledNum) || calledNumbers.contains("I" + calledNum)
+                    || calledNumbers.contains("N" + calledNum) || calledNumbers.contains("G" + calledNum)
+                    || calledNumbers.contains("O" + calledNum)) {
                 System.out.println("This number has already been called.");
                 continue;
             }
-
 
             if (col != -1 && card.hasNumber(calledNum, col)) { // Use the column to mark the correct one
                 for (int row = 0; row < 5; row++) {
@@ -281,14 +289,13 @@ class BingoGame {
             System.err.println("Could not find the file");
             return;
         }
-        // No hardcoded B1, I5, etc.  We now read from the file directly.
+        // No hardcoded B1, I5, etc. We now read from the file directly.
 
         List<String> allCardData = new ArrayList<>();
         while (fileScanner.hasNextLine()) {
             allCardData.add(fileScanner.nextLine());
         }
         fileScanner.close();
-
 
         // Determine all possible numbers to be called.
         Set<Integer> allPossibleNumbers = new HashSet<>();
@@ -297,7 +304,6 @@ class BingoGame {
         }
         List<Integer> numbersToCall = new ArrayList<>(allPossibleNumbers); // Convert to list for shuffling
         Collections.shuffle(numbersToCall); // Shuffle to randomize the numbers
-
 
         // Process each card
         for (BingoCard card : cards) {
@@ -424,7 +430,6 @@ public class Main {
 
             selectedCards = new ArrayList<>(cards.subList(0, numCards));
         }
-
 
         BingoGame game = new BingoGame(selectedCards, isManualMode);
         game.startGame();
