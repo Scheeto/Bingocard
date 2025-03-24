@@ -1,53 +1,24 @@
-import org.junit.jupiter.api.Test;
+abstract class Pattern {
+    // Abstract method that checks if the pattern is matched on the given BingoCard
+    abstract boolean matches(BingoCard card);
+}
 
-public class BingoCardTest {
-    @Test
-    void testCheckBingo() {
-
-    }
-
-    @Test
-    void testDisplayCard() {
-
-    }
-
-    @Test
-    void testDisplayInUserFriendlyFormat() {
-
-    }
-
-    @Test
-    void testGetCard() {
-
-    }
-
-    @Test
-    void testGetId() {
-
-    }
-
-    @Test
-    void testGetMarked() {
-
-    }
-
-    @Test
-    void testHasNumber() {
-
-    }
-
-    @Test
-    void testHasNumber2() {
-
-    }
-
-    @Test
-    void testIsValid() {
-
-    }
-
-    @Test
-    void testMarkCell() {
-
+class RowPattern extends Pattern {
+    @Override
+    boolean matches(BingoCard card) {
+        boolean[][] marked = card.getMarked();
+        for (int i = 0; i < 5; i++) {
+            boolean rowComplete = true;
+            for (int j = 0; j < 5; j++) {
+                if (!marked[i][j]) {
+                    rowComplete = false;
+                    break;
+                }
+            }
+            if (rowComplete) {
+                return true;
+            }
+        }
+        return false;
     }
 }
