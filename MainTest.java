@@ -108,4 +108,22 @@ public class MainTest {
         Pattern diagPattern = new DiagonalPattern();
         assertTrue(diagPattern.matches(card));
     }
+    
+    @Test
+    void testP11_TopLeftToBottomRight() {
+        for (int i = 0; i < 5; i++) {
+            card.markCell(i, i);
+        }
+        Pattern diagPattern = new DiagonalPattern();
+        assertTrue(diagPattern.matches(card));
+    }
+
+    @Test
+    void testP12_SecondRowNotDiagonal() {
+        for (int j = 0; j < 5; j++) {
+            card.markCell(1, j);
+        }
+        Pattern diagPattern = new DiagonalPattern();
+        assertFalse(diagPattern.matches(card));
+    }
 }
