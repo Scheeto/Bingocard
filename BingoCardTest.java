@@ -69,3 +69,26 @@ class DiagonalPattern extends Pattern {
         return mainDiagonal || antiDiagonal;
     }
 }
+class CustomPattern extends Pattern {
+    private int[][] coordinates;
+    
+    public CustomPattern(int[][] coordinates) {
+        this.coordinates = coordinates;
+    }
+    
+    @Override
+    boolean matches(BingoCard card) {
+        boolean[][] marked = card.getMarked();
+        
+        for (int[] coord : coordinates) {
+            int row = coord[0];
+            int col = coord[1];
+            
+            // Check if coordinates are valid and marked
+            if (row < 0 || row >= 5 || col < 0 || col >= 5 || !marked[row][col]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
