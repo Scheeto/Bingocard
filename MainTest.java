@@ -56,5 +56,13 @@ public class MainTest {
         Pattern rowPattern = new RowPattern();
         assertFalse(rowPattern.matches(card));
     }
+    @Test
+    void testP5_FirstColumnFullyMarked() {
+        for (int i = 0; i < 5; i++) {
+            card.markCell(i, 0);
+        }
+        Pattern colPattern = new ColumnPattern();
+        assertTrue(colPattern.matches(card));
+    }
 
 }
