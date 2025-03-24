@@ -48,5 +48,13 @@ public class MainTest {
         Pattern rowPattern = new RowPattern();
         assertTrue(rowPattern.matches(card));
     }
+    @Test
+    void testP4_FirstRowMissingLastColumn() {
+        for (int j = 0; j < 4; j++) {
+            card.markCell(0, j);
+        }
+        Pattern rowPattern = new RowPattern();
+        assertFalse(rowPattern.matches(card));
+    }
 
 }
