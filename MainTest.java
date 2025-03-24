@@ -146,4 +146,29 @@ public class MainTest {
         }
         assertTrue(tPattern.matches(card));
     }
+    @Test
+    void testP15_TPatternMissingMiddle() {
+        int[][] tCoords = {{0,0},{0,1},{0,2},{0,3},{0,4},{1,2},{2,2},{3,2},{4,2}};
+        Pattern tPattern = new CustomPattern(tCoords);
+        for (int[] coord : tCoords) {
+            if (!(coord[0] == 2 && coord[1] == 2)) {  // Skip middle space
+                card.markCell(coord[0], coord[1]);
+            }
+        }
+        assertFalse(tPattern.matches(card));
+    }
+    @Test
+    void testP16_SquarePatternFullyMarked() {
+        int[][] squareCoords = {
+            {0,0},{0,1},{0,2},{0,3},{0,4},  // Top row
+            {4,0},{4,1},{4,2},{4,3},{4,4},  // Bottom row
+            {1,0},{2,0},{3,0},              // Left column (excluding corners)
+            {1,4},{2,4},{3,4}               // Right column (excluding corners)
+        };
+        Pattern squarePattern = new CustomPattern(squareCoords);
+        for (int[] coord : squareCoords) {
+            card.markCell(coord[0], coord[1]);
+        }
+        assertTrue(squarePattern.matches(card));
+    }
 }
