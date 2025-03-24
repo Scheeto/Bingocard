@@ -42,3 +42,30 @@ class ColumnPattern extends Pattern {
         return false;
     }
 }
+
+class DiagonalPattern extends Pattern {
+    @Override
+    boolean matches(BingoCard card) {
+        boolean[][] marked = card.getMarked();
+
+        // Check top-left to bottom-right diagonal
+        boolean mainDiagonal = true;
+        for (int i = 0; i < 5; i++) {
+            if (!marked[i][i]) {
+                mainDiagonal = false;
+                break;
+            }
+        }
+
+        // Check top-right to bottom-left diagonal
+        boolean antiDiagonal = true;
+        for (int i = 0; i < 5; i++) {
+            if (!marked[i][4 - i]) {
+                antiDiagonal = false;
+                break;
+            }
+        }
+
+        return mainDiagonal || antiDiagonal;
+    }
+}
