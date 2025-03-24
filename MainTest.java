@@ -73,4 +73,21 @@ public class MainTest {
         Pattern colPattern = new ColumnPattern();
         assertTrue(colPattern.matches(card));
     }
+    @Test
+    void testP7_LastColumnFullyMarked() {
+        for (int i = 0; i < 5; i++) {
+            card.markCell(i, 4);
+        }
+        Pattern colPattern = new ColumnPattern();
+        assertTrue(colPattern.matches(card));
+    }
+
+    @Test
+    void testP8_FirstRowNotAColumn() {
+        for (int j = 0; j < 5; j++) {
+            card.markCell(0, j);
+        }
+        Pattern colPattern = new ColumnPattern();
+        assertFalse(colPattern.matches(card));
+    }
 }
