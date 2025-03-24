@@ -30,4 +30,23 @@ public class MainTest {
         Pattern rowPattern = new RowPattern();
         assertTrue(rowPattern.matches(card));
     }
+
+    @Test
+    void testP2_ThirdRowFullyMarked() {
+        for (int j = 0; j < 5; j++) {
+            card.markCell(2, j);
+        }
+        Pattern rowPattern = new RowPattern();
+        assertTrue(rowPattern.matches(card));
+    }
+
+    @Test
+    void testP3_LastRowFullyMarked() {
+        for (int j = 0; j < 5; j++) {
+            card.markCell(4, j);
+        }
+        Pattern rowPattern = new RowPattern();
+        assertTrue(rowPattern.matches(card));
+    }
+
 }
