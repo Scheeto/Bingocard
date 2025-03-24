@@ -158,6 +158,24 @@ public class MainTest {
         assertFalse(tPattern.matches(card));
     }
     @Test
+    void testP17_SquarePatternMissingBottomRight() {
+        int[][] squareCoords = {
+            {0,0},{0,1},{0,2},{0,3},{0,4},
+            {4,0},{4,1},{4,2},{4,3},{4,4},
+            {1,0},{2,0},{3,0},
+            {1,4},{2,4},{3,4}
+        };
+        Pattern squarePattern = new CustomPattern(squareCoords);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (!(i == 4 && j == 4)) {  // Skip bottom right
+                    card.markCell(i, j);
+                }
+            }
+        }
+        assertFalse(squarePattern.matches(card));
+    }
+    @Test
     void testP16_SquarePatternFullyMarked() {
         int[][] squareCoords = {
             {0,0},{0,1},{0,2},{0,3},{0,4},  // Top row
@@ -170,5 +188,23 @@ public class MainTest {
             card.markCell(coord[0], coord[1]);
         }
         assertTrue(squarePattern.matches(card));
+    }
+    @Test
+    void testP18_SquarePatternMissingTopLeft() {
+        int[][] squareCoords = {
+            {0,0},{0,1},{0,2},{0,3},{0,4},
+            {4,0},{4,1},{4,2},{4,3},{4,4},
+            {1,0},{2,0},{3,0},
+            {1,4},{2,4},{3,4}
+        };
+        Pattern squarePattern = new CustomPattern(squareCoords);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (!(i == 0 && j == 0)) {  // Skip top left
+                    card.markCell(i, j);
+                }
+            }
+        }
+        assertFalse(squarePattern.matches(card));
     }
 }
