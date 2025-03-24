@@ -90,4 +90,22 @@ public class MainTest {
         Pattern colPattern = new ColumnPattern();
         assertFalse(colPattern.matches(card));
     }
+    @Test
+    void testP9_SecondColumnMissingSecondRow() {
+        for (int i = 0; i < 5; i++) {
+            if (i != 1) card.markCell(i, 1);
+        }
+        Pattern colPattern = new ColumnPattern();
+        assertFalse(colPattern.matches(card));
+    }
+
+    // Diagonal Pattern Tests
+    @Test
+    void testP10_TopRightToBottomLeft() {
+        for (int i = 0; i < 5; i++) {
+            card.markCell(i, 4 - i);
+        }
+        Pattern diagPattern = new DiagonalPattern();
+        assertTrue(diagPattern.matches(card));
+    }
 }
