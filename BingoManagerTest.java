@@ -109,4 +109,57 @@ public class BingoManagerTest {
         assertEquals(9, manager.countBingos(card));
     }
 
+    @Test
+    void testBM8_FullCardMinusSecondRowSecondColumn() {
+        int[][] tCoords = { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 }, { 1, 2 }, { 2, 2 }, { 3, 2 }, { 4, 2 } };
+        int[][] squareCoords = {
+                { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 },
+                { 4, 0 }, { 4, 1 }, { 4, 2 }, { 4, 3 }, { 4, 4 },
+                { 1, 0 }, { 2, 0 }, { 3, 0 },
+                { 1, 4 }, { 2, 4 }, { 3, 4 }
+        };
+
+        manager.addPattern(new RowPattern());
+        manager.addPattern(new ColumnPattern());
+        manager.addPattern(new DiagonalPattern());
+        manager.addPattern(new CustomPattern(tCoords));
+        manager.addPattern(new CustomPattern(squareCoords));
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (!(i == 1 && j == 1)) { // Skip 2nd row, 2nd column
+                    card.markCell(i, j);
+                }
+            }
+        }
+        // 4 rows + 4 columns + 2 diagonals + 1 T + 0 Square = 11
+        assertEquals(11, manager.countBingos(card));
+    }
+
+    @Test
+    void testBM9_FullCardMinusThirdRowSecondColumn() {
+        int[][] tCoords = { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 }, { 1, 2 }, { 2, 2 }, { 3, 2 }, { 4, 2 } };
+        int[][] squareCoords = {
+                { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 },
+                { 4, 0 }, { 4, 1 }, { 4, 2 }, { 4, 3 }, { 4, 4 },
+                { 1, 0 }, { 2, 0 }, { 3, 0 },
+                { 1, 4 }, { 2, 4 }, { 3, 4 }
+        };
+
+        manager.addPattern(new RowPattern());
+        manager.addPattern(new ColumnPattern());
+        manager.addPattern(new DiagonalPattern());
+        manager.addPattern(new CustomPattern(tCoords));
+        manager.addPattern(new CustomPattern(squareCoords));
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (!(i == 2 && j == 1)) { // Skip 3rd row, 2nd column
+                    card.markCell(i, j);
+                }
+            }
+        }
+        // 4 rows + 4 columns + 2 diagonals + 1 T + 1 Square = 12
+        assertEquals(12, manager.countBingos(card));
+    }
 }
