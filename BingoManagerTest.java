@@ -30,3 +30,30 @@ public class BingoManagerTest {
         }
         assertEquals(1, manager.countBingos(card));
     }
+
+    @Test
+    void testBM2_FirstThirdLastRowsFullyMarked() {
+        manager.addPattern(new RowPattern());
+        for (int j = 0; j < 5; j++) {
+            card.markCell(0, j); // First row
+            card.markCell(2, j); // Third row
+            card.markCell(4, j); // Last row
+        }
+        assertEquals(3, manager.countBingos(card));
+    }
+
+    @Test
+    void testBM3_RowsAndColumnMarked() {
+        manager.addPattern(new RowPattern());
+        for (int j = 0; j < 5; j++) {
+            card.markCell(0, j); // First row
+            card.markCell(2, j); // Third row
+            card.markCell(4, j); // Last row
+        }
+        for (int i = 0; i < 5; i++) {
+            card.markCell(i, 4); // Last column
+        }
+        assertEquals(3, manager.countBingos(card));
+    }
+
+}
